@@ -1,0 +1,4 @@
+cron:
+- description: minutely ping
+  url: /ping
+  schedule: every 1 minute

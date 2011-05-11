@@ -96,6 +96,7 @@ class ServicesListHandler(restful.Controller):
             
             name = self.request.get('name', default_value=None)
             description = self.request.get('description', default_value=None)
+            url = self.request.get('url', default_value=None)
             
             if name and description:
                 slug = slugify.slugify(name)
@@ -104,11 +105,12 @@ class ServicesListHandler(restful.Controller):
                 # Update existing resource
                 if existing_s:
                     existing_s.description = description
+                    existing_s.url = url
                     existing_s.put()
                     self.json(existing_s.rest(self.base_url(version)))
                 # Create new service
                 else:
-                    s = Service(name=name, slug=slug, description=description)
+                    s = Service(name=name, slug=slug, description=description, url=url)
                     s.put()
                     self.json(s.rest(self.base_url(version)))
             else:

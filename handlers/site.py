@@ -54,6 +54,7 @@ from time import mktime
 from google.appengine.ext import webapp
 from google.appengine.ext import db
 from google.appengine.api import users
+from google.appengine.api import urlfetch
 
 import oauth2 as oauth
 from handlers import restful
@@ -192,6 +193,18 @@ class ServiceHandler(restful.Controller):
             td["end_date"] = None
 
         self.render(td, 'service.html')
+
+class PingHandler(restful.Controller):
+	def get(self):
+		services = Service.all().fetch(999)
+		statuses = Status.all().fetch(999)
+		for service in services:
+			if service.url == None:
+				continue
+			res = urlfetch.fetch(service.url)
+			if res.status_code == 200:
+				event = Event(service = service, status = statuses[1], message = "test")
+				event.put()
         
 class DebugHandler(restful.Controller):
     

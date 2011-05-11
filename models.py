@@ -73,7 +73,8 @@ class Service(db.Model):
         Properties:
         name        -- string: The name of this service
         description -- string: The function of the service
-        slug        -- stirng: URL friendly version of the name
+        slug        -- string: URL friendly version of the name
+		url			-- string: URL for the service cronjob
 
     """
     @staticmethod
@@ -144,6 +145,7 @@ class Service(db.Model):
     slug = db.StringProperty(required=True)
     name = db.StringProperty(required=True)
     description = db.StringProperty(required=True)
+    url = db.StringProperty(required=False)
     
     def sid(self):
         return str(self.key())
@@ -173,7 +175,7 @@ class Status(db.Model):
 
         Properties:
         name        -- string: The friendly name of this status
-        slug        -- stirng: The identifier for the status
+     	slug        -- stirng: The identifier for the status
         description -- string: The state this status represents
         image       -- string: Image in /images/status
         severity    -- int: The serverity of this status

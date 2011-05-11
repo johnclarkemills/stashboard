@@ -436,7 +436,8 @@ stashboard.fillIndex = function() {
                     url: "/api/v1/services",
                     data: { 
                         name: $("#service-name").val(), 
-                        description: $("#service-description").val()
+                        description: $("#service-description").val(),
+                        url: $("#service-url").val()
                     },
                     dataType: 'json', 
                     context: $("#service-list"), 
