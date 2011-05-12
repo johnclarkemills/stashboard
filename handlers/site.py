@@ -232,13 +232,15 @@ class NotificationHandler(restful.Controller):
             events = Event.all().filter("service =", service).fetch(5)
             body += service.name+"\n"
             for event in events:
-                if event.status.name != "Up":
-                    failures.append(service.name)
-                    if last_notification:
-                        if datetime.now()+timedelta(hours=-1) < last_notification.senttime:
-                            send_notification = True
-                    else:
+                if event.status.name == "Up":
+                    continue
+                
+                failures.append(service.name)
+                if last_notification:
+                    if datetime.now() + timedelta(hours=-1) < last_notification.senttime:
                         send_notification = True
+                else:
+                    send_notification = True
                 body += event.start.strftime("%m/%d %H:%M")+" - "+event.status.name+"\n"
             body += "\n"
             
