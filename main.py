@@ -48,16 +48,17 @@ logging.info('Loading %s, app version = %s',
              __name__, os.getenv('CURRENT_VERSION_ID'))
            
 if (config.SITE["rich_client"]):  
-	serviceHandler = site.ServiceHandler
-	pingHandler = site.PingHandler
-	rootHandler = site.RootHandler
+    serviceHandler = site.ServiceHandler
+    pingHandler = site.PingHandler
+    notificationHandler = site.NotificationHandler
+    rootHandler = site.RootHandler
 else:
     rootHandler = site.BasicRootHandler
     serviceHandler = site.BasicServiceHandler
 
 ROUTES = [
     ('/*$', rootHandler),
-	('/debug', site.DebugHandler),
+    ('/debug', site.DebugHandler),
     #('/*[^/]', site.) redirect pages without slashed to pages with slashes
     
     #API
@@ -79,7 +80,8 @@ ROUTES = [
     (r'/services/(.+)/(.+)/(.+)', serviceHandler),
     (r'/services/(.+)/(.+)', serviceHandler),
     (r'/services/(.+)', serviceHandler),
-	(r'/ping', pingHandler),
+    (r'/ping', pingHandler),
+    (r'/notify', notificationHandler),
     (r'/documentation/credentials', site.ProfileHandler),
     (r'/documentation/verify', site.VerifyAccessHandler),
     (r'/documentation/(.+)', site.DocumentationHandler),

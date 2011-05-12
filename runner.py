@@ -41,18 +41,18 @@ html = """
 <!DOCTYPE html>
 <html>
 <head>
-	<title>QUnit Test Suite</title>
-	<link rel="stylesheet" href="/tests/qunit/qunit.css" type="text/css" media="screen">
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-	<script type="text/javascript" src="/tests/qunit/qunit.js"></script>
-	<script type="text/javascript" src="/tests/tests/services.js"></script>
+    <title>QUnit Test Suite</title>
+    <link rel="stylesheet" href="/tests/qunit/qunit.css" type="text/css" media="screen">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script type="text/javascript" src="/tests/qunit/qunit.js"></script>
+    <script type="text/javascript" src="/tests/tests/services.js"></script>
 </head>
 <body>
-	<h1 id="qunit-header">QUnit Test Suite</h1>
-	<h2 id="qunit-banner"></h2>
-	<div id="qunit-testrunner-toolbar"></div>
-	<h2 id="qunit-userAgent"></h2>
-	<ol id="qunit-tests"></ol>
+    <h1 id="qunit-header">QUnit Test Suite</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
 </body>
 </html>
 """

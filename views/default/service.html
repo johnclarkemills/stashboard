@@ -28,10 +28,10 @@
         
         {% if user_is_admin %}
           <a class="button" id="update-status">
-	    Update Status
+        Update Status
           </a>
           <a class="button" id="add-note">
-	    Add Note
+        Add Note
           </a>
 
 
@@ -39,7 +39,7 @@
         
         <h2><span></span></h2>
 
-	<p id="serviceDescription"></p>
+    <p id="serviceDescription"></p>
 
         {% if start_date %}        
           <h3 class="date-range">
@@ -81,23 +81,27 @@
       </div>
 
       <div class="dialog" id="add-note-modal" title="Add Note">
-	<label id="messageLabel" for="message">Message:</label>
-	<textarea id="noteMessage" class="update-message" name="message"></textarea>
+    <label id="messageLabel" for="message">Message:</label>
+    <textarea id="noteMessage" class="update-message" name="message"></textarea>
       </div>
 
       <div class="dialog" id="add-event-modal" title="Update Status">
-	<label id="statusLabel" for="status">Status:</label>
-	<select id="statusValue" class="update-status" name="severity"></select>
-	<label id="messageLabel" for="message">Message:</label>
-	<textarea id="eventMessage" class="update-message" name="message"></textarea>
+    <label id="statusLabel" for="status">Status:</label>
+    <select id="statusValue" class="update-status" name="severity"></select>
+    <label id="messageLabel" for="message">Message:</label>
+    <textarea id="eventMessage" class="update-message" name="message"></textarea>
       </div>
 
       <div class="dialog" id="edit-service-modal" title="Edit Service">
         <label  for="service-name">Name</label>
-        <input type="text" id="service-name" name="service-name">
+        <input type="text" id="service-name"name="service-name">
+                <label  for="service-serviceurl">URL (Optional)</label>
+        <input type="text" id="service-serviceurl"name="service-serviceurl">
         <label for="service-description">Description</label>
         <textarea
           id="service-description" name="service-description"></textarea>
+        <label  for="service-pattern">Regex Pattern (Optional)</label>
+        <input type="text" id="service-pattern"name="service-pattern">
       </div>
       
       {% endif %}

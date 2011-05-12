@@ -74,7 +74,8 @@ class Service(db.Model):
         name        -- string: The name of this service
         description -- string: The function of the service
         slug        -- string: URL friendly version of the name
-		url			-- string: URL for the service cronjob
+        url            -- string: URL for the service cronjob
+        pattern        -- string: Regex pattern for checks
 
     """
     @staticmethod
@@ -145,7 +146,8 @@ class Service(db.Model):
     slug = db.StringProperty(required=True)
     name = db.StringProperty(required=True)
     description = db.StringProperty(required=True)
-    url = db.StringProperty(required=False)
+    serviceurl = db.StringProperty(required=False)
+    pattern = db.StringProperty(required=False)
     
     def sid(self):
         return str(self.key())
@@ -161,6 +163,10 @@ class Service(db.Model):
         m["id"] = str(self.slug)
         m["description"] = str(self.description)
         m["url"] = base_url + self.resource_url()
+        if self.pattern:
+            m["pattern"] = str(self.pattern)
+        if self.serviceurl:
+            m["serviceurl"] = str(self.serviceurl)
         
         event = self.current_event()
         if event:
@@ -175,7 +181,7 @@ class Status(db.Model):
 
         Properties:
         name        -- string: The friendly name of this status
-     	slug        -- stirng: The identifier for the status
+        slug        -- string: The identifier for the status
         description -- string: The state this status represents
         image       -- string: Image in /images/status
         severity    -- int: The serverity of this status
@@ -302,3 +308,6 @@ class AuthRequest(db.Model):
 class Setting(db.Model):
     name = db.StringProperty(required=True)
 
+class Notification(db.Model):
+    senttime = db.DateTimeProperty(required=True, auto_now_add=True)
+    numfailures = db.IntegerProperty(default=0)

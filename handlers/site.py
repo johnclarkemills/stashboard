@@ -39,7 +39,7 @@ clients, like a Flex app or a desktop program.
 __author__ = 'Kyle Conroy'
 
 import datetime
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 import calendar
 import string
 import re
@@ -53,13 +53,12 @@ from time import mktime
 
 from google.appengine.ext import webapp
 from google.appengine.ext import db
-from google.appengine.api import users
-from google.appengine.api import urlfetch
+from google.appengine.api import users, urlfetch, mail
 
 import oauth2 as oauth
 from handlers import restful
 from utils import authorized
-from models import Status, Service, Event, Profile, AuthRequest
+from models import Status, Service, Event, Profile, AuthRequest, Notification
 
 import config
 
@@ -195,17 +194,65 @@ class ServiceHandler(restful.Controller):
         self.render(td, 'service.html')
 
 class PingHandler(restful.Controller):
-	def get(self):
-		services = Service.all().fetch(999)
-		statuses = Status.all().fetch(999)
-		for service in services:
-			if service.url == None:
-				continue
-			res = urlfetch.fetch(service.url)
-			if res.status_code == 200:
-				event = Event(service = service, status = statuses[1], message = "test")
-				event.put()
+    def get(self):
+        services = Service.all().fetch(999)
+        statuses = Status.all().fetch(999)
+        for service in services:
+            if service.serviceurl == None:
+                continue
+            res = urlfetch.fetch(service.serviceurl)
+            if res.status_code == 200:
+                if service.pattern:
+                    result = re.search(service.pattern, res.content)
+                    
+                    if result:
+                        event = Event(service = service, status = statuses[1], message = "Passed. Page loaded. Regex found.")
+                        event.put()
+                    else:
+                        event = Event(service = service, status = statuses[0], message = "Failed regex.")
+                        event.put()
+                else:
+                    event = Event(service = service, status = statuses[1], message = "Passed. Page loaded.")
+                    event.put()
+            else:
+                event = Event(service = service, status = statuses[0], message = "Failed page load.")
+                event.put()
+                
+class NotificationHandler(restful.Controller):
+    def get(self):
+        services = Service.all().fetch(999)
+        user_address = "putney.dean@gmail.com"
+        body = "Your ping report summary\n\n"
+        send_notification = False
+        failures = []
+        notifications = Notification.all().fetch(1)
+        last_notification = notifications.pop() if len(notifications) > 0 else None
         
+        for service in services:
+            events = Event.all().filter("service =", service).fetch(5)
+            body += service.name+"\n"
+            for event in events:
+                if event.status.name != "Up":
+                    failures.append(service.name)
+                    if last_notification:
+                        if datetime.now()+timedelta(hours=-1) < last_notification.senttime:
+                            send_notification = True
+                    else:
+                        send_notification = True
+                body += event.start.strftime("%m/%d %H:%M")+" - "+event.status.name+"\n"
+            body += "\n"
+            
+        if send_notification and (last_notification == None or last_notification.numfailures != len(failures)):
+            notification = Notification(numfailures=len(failures))
+            notification.put()
+            if mail.is_email_valid(user_address):
+                sender_address = "Dean Putney <dean@boingboing.net>"
+                subject = "FAILED ping report"
+                body = body
+            
+                result = mail.send_mail(sender_address, user_address, subject, body)
+                self.response.out.write(str(result))
+                
 class DebugHandler(restful.Controller):
     
     @authorized.force_ssl()
