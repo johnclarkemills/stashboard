@@ -248,13 +248,16 @@ class NotificationHandler(restful.Controller):
             return
         
         # okay status got better, notify users services are returning to normal
-        if last_notifiction.numfailures > 0 and len(failtures) == 0:
+        if last_notifiction.numfailures > 0 and len(failures) == 0:
             subject = "RESTORED system report"
             result = mail.send_mail(SENDER_ADDRESS, user_address, subject, '')
             notification = Notification(numfailures=len(failures))
             notification.put()
             return
-            
+        
+        # finally, there are still errors in our service
+        
+        
             #for event in events:
             #    if event.status.name == "Up":
             #        continue
