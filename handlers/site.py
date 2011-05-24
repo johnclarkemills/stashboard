@@ -245,7 +245,7 @@ class NotificationHandler(restful.Controller):
             body += "\n"
                 
             # TODO: do we need to notified about failures across multiple services?
-            if error_count >= ERROR_COUNT_THRESHOLD or prev_error_count >= ERROR_COUNT_THRESHOLD
+            if error_count >= ERROR_COUNT_THRESHOLD or prev_error_count >= ERROR_COUNT_THRESHOLD:
                 if error_count == prev_error_count:
                     continue
                 elif error_count > prev_error_count:
