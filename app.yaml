@@ -1,4 +1,4 @@
-application: stashboard
+application: deanputney-stashboard
 version: 1
 runtime: python
 api_version: 1
@@ -54,3 +54,6 @@ skip_files: |
  (license\.txt)|
  (setup.py)
  )$
+ 
+builtins:
+- datastore_admin: on

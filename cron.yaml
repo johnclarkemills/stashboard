@@ -1,4 +1,9 @@
 cron:
 - description: minutely ping
   url: /ping
-  schedule: every 1 minute
+  schedule: every 1 minutes
+  
+- description: notification sender
+  url: /notify
+  schedule: every 5 minutes
+  

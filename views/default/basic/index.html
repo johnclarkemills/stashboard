@@ -25,15 +25,15 @@
                   </td>
                   
                   <td class="status highlight">
-		    <a href="/services/{{ service.slug }}">
-		    {% if service.current_event.status %}
+            <a href="/services/{{ service.slug }}">
+            {% if service.current_event.status %}
                     <img src="/images/status/{{ service.current_event.status.image }}.png"
                       alt="{{ service.current_event.name }}"/>
-		    {% else %}
+            {% else %}
                     <img src="/images/status/{{ default.image }}.png"
                       alt="{{ default.name }}"/>
-		    {% endif %}
-		    </a>
+            {% endif %}
+            </a>
                   </td>
                   
                   {% for status in service.last_five_days %}
@@ -41,7 +41,7 @@
                       <a href="/services/{{service.slug}}/{{ status.day|date:"Y/n/j" }}">
                       <img src="/images/status/{{ status.image }}.png"
                         alt="{{ status.image }}"/>
-		      </a>
+              </a>
                     </td>
                   {% endfor %}
                       

@@ -205,8 +205,7 @@ class EventsListHandler(restful.Controller):
                 start = self.request.get('start', default_value=None)
                 end = self.request.get('end', default_value=None)
                                  
-                query = Event.all()
-                query.filter('service =', service)
+                query = Event.all().filter('service =', service)
                         
                 if start:
                     try:
@@ -228,7 +227,11 @@ class EventsListHandler(restful.Controller):
                         
                 if query:
                     data = []
-
+                    
+                    # Bizarre nonsense involving the query being built. 
+                    # For large datasets, must assign a max value to the fetch.
+                    query = query.fetch(100)
+                    
                     for s in query:
                         data.append(s.rest(self.base_url(version)))
 

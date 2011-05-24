@@ -39,7 +39,7 @@ clients, like a Flex app or a desktop program.
 __author__ = 'Kyle Conroy'
 
 import datetime
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 import calendar
 import string
 import re
@@ -219,68 +219,41 @@ class PingHandler(restful.Controller):
                 event.put()
                 
 class NotificationHandler(restful.Controller):
-    ERROR_COUNT_THRESHOLD = 2;
-    SENDER_ADDRESS = "Dean Putney <dean@boingboing.net>"
-    
     def get(self):
-        services = Service.all().fetch(999)
+        ERROR_COUNT_THRESHOLD = 2
+        SENDER_ADDRESS = "Dean Putney <dean@boingboing.net>"
+        services = Service.all().fetch(100)
         user_address = "putney.dean@gmail.com"
         send_notification = False
         failures = []
+        body = ""
 
         for service in services:
             error_count = 0
+            prev_error_count = 0
             # search through recent 5 events.
             for event in Event.all().filter("service =", service).fetch(5):
                 if event.status.name == "Up":
                     continue
                 error_count += 1
-            # TODO: do we need to notified about failures across multiple services?
-            if error_count >= ERROR_COUNT_THRESHOLD:
-                failures.append(service.name)
                 
-        # send emails
-        notifications = Notification.all().fetch(1)
-        last_notification = notifications.pop() if len(notifications) > 0 else None
-        
-        # no problems, and the status didnt differ so we dont need to notify
-        if last_notification.numfailures == 0 and len(failures) == 0:
-            return
-        
-        # okay status got better, notify users services are returning to normal
-        if last_notifiction.numfailures > 0 and len(failures) == 0:
-            subject = "RESTORED system report"
-            result = mail.send_mail(SENDER_ADDRESS, user_address, subject, '')
-            notification = Notification(numfailures=len(failures))
-            notification.put()
-            return
-        
-        # finally, there are still errors in our service
-        
-        
-            #for event in events:
-            #    if event.status.name == "Up":
-            #        continue
-            #    
-            #    failures.append(service.name)
-            #    if last_notification:
-            #        if datetime.now() + timedelta(hours=-1) < last_notification.senttime:
-            #            send_notification = True
-            #    else:
-            #        send_notification = True
-            #    body += event.start.strftime("%m/%d %H:%M")+" - "+event.status.name+"\n"
-            #body += "\n"
-            
-        #if send_notification and (last_notification == None or last_notification.numfailures != len(failures)):
-        #    notification = Notification(numfailures=len(failures))
-        #    notification.put()
-        #    if mail.is_email_valid(user_address):
-        #        sender_address = "Dean Putney <dean@boingboing.net>"
-        #        subject = "FAILED ping report"
-        #        body = body
-        #    
-        #        result = mail.send_mail(sender_address, user_address, subject, body)
-        #        self.response.out.write(str(result))
+            for event in Event.all().filter("service =", service).fetch(limit=5, offset=5):
+                if event.status.name == "Up":
+                    continue
+                prev_error_count += 1
+                body += event.start.strftime("%m/%d %H:%M")+" - "+event.status.name+"\n"
+            body += "\n"
+                
+            # TODO: do we need to notified about failures across multiple services?
+            if error_count >= ERROR_COUNT_THRESHOLD or prev_error_count >= ERROR_COUNT_THRESHOLD
+                if error_count == prev_error_count:
+                    continue
+                elif error_count > prev_error_count:
+                    subject = "ERROR system report"
+                    result = mail.send_mail(SENDER_ADDRESS, user_address, subject, '')
+                elif error_count < prev_error_count:
+                    subject = "RESTORED system report"
+                    result = mail.send_mail(SENDER_ADDRESS, user_address, subject, '')
                 
 class DebugHandler(restful.Controller):
     

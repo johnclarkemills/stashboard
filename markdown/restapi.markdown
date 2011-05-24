@@ -309,11 +309,11 @@ While the format of these parameters is very flexible, we suggested either the R
 
 Option     Description
 -----       --------------------------------
-start	    Only show events which started after
+start        Only show events which started after
             this date, inclusive.
             
 end         Only show events which started before
-	    this date, inclusive. 
+        this date, inclusive. 
 
 -------------------------------------------------------------
 Table: Events List URL Filtering Options
@@ -502,9 +502,9 @@ name            Required    The name of the status
 
 description     Required    The description of the status
 
-level        	Required    The level of the status.
-			    Must be a values listed in the
-			    Levels resource
+level            Required    The level of the status.
+                Must be a values listed in the
+                Levels resource
 
 image           Required    The filename of the image, with
                             no extension. See the 

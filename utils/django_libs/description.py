@@ -32,6 +32,6 @@ from google.appengine.ext import webapp
 register = webapp.template.create_template_register()
 
 def description(value):
-	return re.sub(r'<[^>]*?>', '', value).replace("\n","")[0:150]	
-	
+    return re.sub(r'<[^>]*?>', '', value).replace("\n","")[0:150]    
+    
 register.filter(description)

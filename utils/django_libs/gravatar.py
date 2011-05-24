@@ -32,6 +32,6 @@ from google.appengine.ext import webapp
 register = webapp.template.create_template_register()
 
 def gravatar(email):
-	return md5.new(email).hexdigest()	
-	
+    return md5.new(email).hexdigest()    
+    
 register.filter(gravatar)
