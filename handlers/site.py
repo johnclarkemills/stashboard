@@ -221,7 +221,7 @@ class PingHandler(restful.Controller):
 class NotificationHandler(restful.Controller):
     def get(self):
         ERROR_COUNT_THRESHOLD = 2
-        SENDER_ADDRESS = "Dean Putney <dean@boingboing.net>"
+        SENDER_ADDRESS = "BBF Status <bbfdirect.status@gmail.com>"
         services = Service.all().fetch(100)
         user_address = "putney.dean@gmail.com"
         send_notification = False
