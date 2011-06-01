@@ -38,12 +38,13 @@ SITE = {
     "html_type": "text/html",
     "charset": "utf-8",
     "title": "Stashboard",
-    "author": "Kyle Conroy",
+    "author": "BBF Status",
     # This must be the email address of a registered administrator for the 
     # application due to mail api restrictions.
-    "email": "kyle.j.conroy@gmail.com",
+    "email": "bbfdirect.status@gmail.com",
     "description": "A RESTful Status Tracker on top of App Engine.",
     "root_url": "http://stashboard.appspot.com",
     "template_path": os.path.join(APP_ROOT_DIR, "views/default"),
     "rich_client": True, #If false, the website will go into a simplified read-only view
+    "recipients": "putney.dean@gmail.com, asah@bbfdirect.com, john@bbfdirect.com",
 }

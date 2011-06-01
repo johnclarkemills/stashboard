@@ -200,7 +200,12 @@ class PingHandler(restful.Controller):
         for service in services:
             if service.serviceurl == None:
                 continue
-            res = urlfetch.fetch(service.serviceurl)
+            try:
+                res = urlfetch.fetch(service.serviceurl)
+            except:
+                event = Event(service = service, status = statuses[0], message = "Failed page load.")
+                event.put()
+                continue
             if res.status_code == 200:
                 if service.pattern:
                     result = re.search(service.pattern, res.content)
@@ -221,9 +226,9 @@ class PingHandler(restful.Controller):
 class NotificationHandler(restful.Controller):
     def get(self):
         ERROR_COUNT_THRESHOLD = 2
-        SENDER_ADDRESS = "BBF Status <bbfdirect.status@gmail.com>"
+        SENDER_ADDRESS = config.SITE["author"]+" <"+config.SITE["email"]+">"
         services = Service.all().fetch(100)
-        user_address = "putney.dean@gmail.com"
+        recipient_addresses = config.SITE["recipients"]
         send_notification = False
         failures = []
         body = ""
@@ -250,10 +255,10 @@ class NotificationHandler(restful.Controller):
                     continue
                 elif error_count > prev_error_count:
                     subject = "ERROR system report"
-                    result = mail.send_mail(SENDER_ADDRESS, user_address, subject, '')
+                    result = mail.send_mail(SENDER_ADDRESS, recipient_addresses, subject, body)
                 elif error_count < prev_error_count:
                     subject = "RESTORED system report"
-                    result = mail.send_mail(SENDER_ADDRESS, user_address, subject, '')
+                    result = mail.send_mail(SENDER_ADDRESS, recipient_addresses, subject, body)
                 
 class DebugHandler(restful.Controller):
     
