@@ -46,5 +46,5 @@ SITE = {
     "root_url": "http://stashboard.appspot.com",
     "template_path": os.path.join(APP_ROOT_DIR, "views/default"),
     "rich_client": True, #If false, the website will go into a simplified read-only view
-    "recipients": "putney.dean@gmail.com, asah@bbfdirect.com, john@bbfdirect.com",
+    "recipients": "putney.dean@gmail.com", #, asah@bbfdirect.com, john@bbfdirect.com",
 }

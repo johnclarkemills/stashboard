@@ -240,20 +240,26 @@ class NotificationHandler(restful.Controller):
             # search through recent 5 events.
             for event in Event.all().filter("service =", service).order("-start").fetch(5):
                 self.response.out.write(service.name+": "+event.status.name+"<br/>")
-                body += service.name+" "+event.start.strftime("%m/%d %H:%M")+" - "+event.status.name+"\n"
+                body += service.name+" "+event.start.strftime("%m/%d %H:%M")+" - "+event.status.name+": "+event.status.message+"\n"
                 if event.status.name == "Up":
+                    error_count = 0
                     continue
                 error_count += 1
+                if error_count == ERROR_COUNT_THRESHOLD:
+                    break
                 
             for event in Event.all().filter("service =", service).order("-start").fetch(limit=5, offset=5):
                 self.response.out.write(service.name+": "+event.status.name+"<br/>")
-                body += service.name+" "+event.start.strftime("%m/%d %H:%M")+" - "+event.status.name+"\n"
+                body += service.name+" "+event.start.strftime("%m/%d %H:%M")+" - "+event.status.name+": "+event.status.message+"\n"
                 if event.status.name == "Up":
+                    prev_error_count = 0
                     continue
                 prev_error_count += 1
+                if prev_error_count == ERROR_COUNT_THRESHOLD:
+                    break
             body += "\n"
                 
-            self.response.out.write("prev: "+str(prev_error_count)+"  curr: "+str(error_count)+"\n")
+            self.response.out.write("prev: "+str(prev_error_count)+"  curr: "+str(error_count)+"\n\n")
             
             # TODO: do we need to notified about failures across multiple services?
             if error_count >= ERROR_COUNT_THRESHOLD or prev_error_count >= ERROR_COUNT_THRESHOLD:
@@ -261,9 +267,11 @@ class NotificationHandler(restful.Controller):
                     continue
                 elif error_count > prev_error_count:
                     subject = "BBF Status - ERROR system report for "+service.name
+                    self.response.out.write("ERROR NOTIFICATION SENT\n")
                     result = mail.send_mail(SENDER_ADDRESS, recipient_addresses, subject, body)
                 elif error_count < prev_error_count:
                     subject = "BBF Status - RESTORED system report for "+service.name
+                    self.response.out.write("RESTORED NOTIFICATION SENT\n")
                     result = mail.send_mail(SENDER_ADDRESS, recipient_addresses, subject, body)
                 
 class DebugHandler(restful.Controller):
