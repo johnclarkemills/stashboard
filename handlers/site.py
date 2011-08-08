@@ -240,7 +240,7 @@ class NotificationHandler(restful.Controller):
             # search through recent 5 events.
             for event in Event.all().filter("service =", service).order("-start").fetch(5):
                 self.response.out.write(service.name+": "+event.status.name+"<br/>")
-                body += service.name+" "+event.start.strftime("%m/%d %H:%M")+" - "+event.status.name+": "+event.status.message+"\n"
+                body += service.name+" "+event.start.strftime("%m/%d %H:%M")+" - "+event.status.name+": "+event.status.description+"\n"
                 if event.status.name == "Up":
                     error_count = 0
                     continue
@@ -250,16 +250,21 @@ class NotificationHandler(restful.Controller):
                 
             for event in Event.all().filter("service =", service).order("-start").fetch(limit=5, offset=5):
                 self.response.out.write(service.name+": "+event.status.name+"<br/>")
-                body += service.name+" "+event.start.strftime("%m/%d %H:%M")+" - "+event.status.name+": "+event.status.message+"\n"
+                body += service.name+" "+event.start.strftime("%m/%d %H:%M")+" - "+event.status.name+": "+event.status.description+"\n"
                 if event.status.name == "Up":
                     prev_error_count = 0
                     continue
                 prev_error_count += 1
                 if prev_error_count == ERROR_COUNT_THRESHOLD:
                     break
-            body += "\n"
+            body += "\n\n"
+            if service.serviceurl:
+                body += "This error was reported for this URL: "+service.serviceurl
+            body += "Check the GAE system status here: http://code.google.com/status/appengine\n"
+            body += "Access the GAE dashboard here: https://appengine.google.com/\n"
                 
-            self.response.out.write("prev: "+str(prev_error_count)+"  curr: "+str(error_count)+"\n\n")
+            self.response.out.write("prev: "+str(prev_error_count)+"  curr: "+str(error_count)+"<br/><br/>")
+            self.response.out.write("\n\n"+body+"<br/><br/>")
             
             # TODO: do we need to notified about failures across multiple services?
             if error_count >= ERROR_COUNT_THRESHOLD or prev_error_count >= ERROR_COUNT_THRESHOLD:
