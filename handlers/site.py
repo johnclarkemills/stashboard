@@ -259,7 +259,7 @@ class NotificationHandler(restful.Controller):
                     break
             body += "\n\n"
             if service.serviceurl:
-                body += "This error was reported for this URL: "+service.serviceurl
+                body += "This message is in reference to this URL: "+service.serviceurl
             body += "Check the GAE system status here: http://code.google.com/status/appengine\n"
             body += "Access the GAE dashboard here: https://appengine.google.com/\n"
                 
