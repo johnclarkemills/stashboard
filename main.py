@@ -82,6 +82,7 @@ ROUTES = [
     (r'/services/(.+)', serviceHandler),
     (r'/ping', pingHandler),
     (r'/notify', notificationHandler),
+    (r'/clean_data', site.DataCleanupHandler),
     (r'/documentation/credentials', site.ProfileHandler),
     (r'/documentation/verify', site.VerifyAccessHandler),
     (r'/documentation/(.+)', site.DocumentationHandler),

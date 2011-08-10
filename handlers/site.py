@@ -39,7 +39,7 @@ clients, like a Flex app or a desktop program.
 __author__ = 'Kyle Conroy'
 
 import datetime
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 import calendar
 import string
 import re
@@ -278,9 +278,17 @@ class NotificationHandler(restful.Controller):
                     subject = "BBF Status - RESTORED system report for "+service.name
                     self.response.out.write("RESTORED NOTIFICATION SENT\n")
                     result = mail.send_mail(SENDER_ADDRESS, recipient_addresses, subject, body)
+                    
+class DataCleanupHandler(restful.Controller):
+  def get(self):
+    today = datetime.today()
+    cutoff = today - timedelta(days=8)
+    events = Event.all().filter('start <', cutoff)
+    for event in events:
+      self.response.out.write(event.status.name)
+      event.delete()
                 
 class DebugHandler(restful.Controller):
-    
     @authorized.force_ssl()
     def get(self):
         logging.debug("DebugHandler %s", self.request.scheme)
