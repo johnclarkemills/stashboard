@@ -38,27 +38,22 @@ clients, like a Flex app or a desktop program.
 
 __author__ = 'Kyle Conroy'
 
-import datetime
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 import calendar
-import string
 import re
 import os
 import cgi
-import urllib
 import logging
-import urlparse
 from wsgiref.handlers import format_date_time
 from time import mktime
 
 from google.appengine.ext import webapp
-from google.appengine.ext import db
 from google.appengine.api import users, urlfetch, mail
 
 import oauth2 as oauth
 from handlers import restful
 from utils import authorized
-from models import Status, Service, Event, Profile, AuthRequest, Notification
+from models import Status, Service, Event, Profile, AuthRequest
 
 import config
 
@@ -107,11 +102,11 @@ def default_template_data():
     return data
 
 def get_past_days(num):
-    date = datetime.date.today()
+    date_today = date.today()
     dates = []
     
     for i in range(1, num+1):
-        dates.append(date - datetime.timedelta(days=i))
+        dates.append(date_today - timedelta(days=i))
     
     return dates
     
@@ -259,10 +254,10 @@ class NotificationHandler(restful.Controller):
                     break
             body += "\n\n"
             if service.serviceurl:
-                body += "This message is in reference to this URL: "+service.serviceurl
-            body += "Check the GAE system status here: http://code.google.com/status/appengine\n"
-            body += "Access the GAE dashboard here: https://appengine.google.com/\n"
-                
+                body += "This message is in reference to this URL: "+service.serviceurl+"\n"
+            body += "Stashboard: http://" + os.environ.get('APPLICATION_ID') + ".appspot.com/\n"
+            body += "GAE system status: http://code.google.com/status/appengine\n"
+
             self.response.out.write("prev: "+str(prev_error_count)+"  curr: "+str(error_count)+"<br/><br/>")
             self.response.out.write("\n\n"+body+"<br/><br/>")
             
@@ -281,7 +276,7 @@ class NotificationHandler(restful.Controller):
                     
 class DataCleanupHandler(restful.Controller):
   def get(self):
-    today = datetime.today()
+    today = date.today()
     cutoff = today - timedelta(days=8)
     events = Event.all().filter('start <', cutoff)
     for event in events:
