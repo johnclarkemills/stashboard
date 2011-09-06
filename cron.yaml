@@ -8,6 +8,5 @@ cron:
   schedule: every 5 minutes
   
 - description: remove old data to clear out database
-  ur: /clean_data
+  url: /clean_data
   schedule: every day 00:00
-  
