@@ -705,7 +705,7 @@ stashboard.fillService = function(serviceName, isAdmin, start_date, end_date) {
                     resizable: false,
                     modal: true,
                     buttons: {
-                        'Edit Service': function(){
+                        'Save': function(){
                             $.ajax({ 
                                 type: "POST",
                                 url: "/api/v1/services/" + service.id,

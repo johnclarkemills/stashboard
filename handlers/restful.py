@@ -38,7 +38,7 @@ __author__ = 'William T. Katz'
 
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
-import jsonpickle
+import simplejson  # json library doesn't exist in python2.5
 import logging
 import os
 import config
@@ -181,16 +181,13 @@ class Controller(webapp.RequestHandler):
         If callback is valid, renders data as jsonp
         """
         callback = self.request.get('callback', default_value=None)
-        
-        data = cgi.escape(jsonpickle.encode(data))
-        
+
         if callback:
             self.response.headers.add_header("Content-Type", "application/javascript")
-            data = callback + "(" + data + ");"
+            self.response.out.write(callback + "(" + simplejson.dumps(data) + ");")
         else:
             self.response.headers.add_header("Content-Type", "application/json")
-        
-        self.response.out.write(data)
+            self.response.out.write(simplejson.dumps(data))
         
     def text(self, data):
         "Renders the given data as text/plain"
