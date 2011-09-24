@@ -1,0 +1,12 @@
+#!/bin/sh
+
+IPADDR=`ifconfig eth0 | perl -ne 'print $1 if /inet addr:([0-9.]+)/;'`
+
+PORT=8083
+if [ "x$IPADDR" = "x10.0.1.11" ]; then
+  PORT=8903
+fi
+
+ps u|perl -ne "print \$1 if /^.+? +([0-9]+ ).+dev_appserver.+$PORT/;"|xargs kill
+
+python2.5 -O -OO $GAEDIR/dev_appserver.py -p $PORT -a $IPADDR $* .

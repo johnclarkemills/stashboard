@@ -1,0 +1,3 @@
+#!/bin/sh
+
+echo $GAEPASSWD | python2.5 $GAEDIR/appcfg.py --email=$GAEUSER --passin --application=bbf-status update .
