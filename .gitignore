@@ -1,6 +1,23 @@
-*.pyc
-.DS_Store
-.project
-.pydevproject
-*.kpf
+# emacs
+[#]*
+.[#]*
 *~
+
+# python
+.pylint
+*.pyc
+*.pyo
+
+# appengine files
+dev_appserver.datastore
+
+scripts/*
+
+# misc crap
+t/*
+f
+f.txt
+f.sorted
+f[0-9]*
+f[0-9]*.txt
+f[0-9]*.sorted
