@@ -126,11 +126,9 @@ td.status a .information {position: absolute; top: 0px; left: 1px; z-index: 500;
 
 .breadcrumb { font-weight: normal;}
 
-#add-note, #update-status { float: right; margin-left: 15px}
+#edit-service, #delete-service, #add-note, #update-status { float: right; margin-left: 15px}
 #add-event-model {display: none;}
 
-#delete-service, #edit-service {margin-top: 20px}
-#delete-service {float: right}
 #delete-service-modal {display: none}
 
 #documentation { 

@@ -420,11 +420,12 @@ stashboard.fillIndex = function() {
 
     $("#add-service").click(function(){
         $("#add-service-modal").dialog('open');
+	$("#service-name").focus();
     });
 
 
     $("#add-service-modal").dialog({
-        height: 310,
+        height: 550,
         width: 460,
         resizable: false,
         modal: true,
@@ -438,7 +439,8 @@ stashboard.fillIndex = function() {
                         name: $("#service-name").val(), 
                         description: $("#service-description").val(),
                         serviceurl: $("#service-serviceurl").val(),
-                        pattern: $("#service-pattern").val()
+                        pattern: $("#service-pattern").val(),
+                        freq: $("#service-freq").val()
                     },
                     dataType: 'json', 
                     context: $("#service-list"), 
@@ -531,7 +533,7 @@ stashboard.fillService = function(serviceName, isAdmin, start_date, end_date) {
         success: function(service){
 
             $("h2 span").text(service.name);
-            $("#serviceDescription").text(service.description);
+            $("#serviceDescription").html("<pre>"+service.description+"</pre>");
 
             var populatStatuses = function(current) {
 
@@ -695,12 +697,13 @@ stashboard.fillService = function(serviceName, isAdmin, start_date, end_date) {
             $("#service-description").val(service.description);
             $("#service-serviceurl").val(service.serviceurl);
             $("#service-pattern").val(service.pattern);
+            $("#service-freq").val(service.freq);
 
 
             $("#edit-service").click(function(e){
                 e.preventDefault();
                 $("#edit-service-modal").dialog({
-                    height: 310,
+                    height: 550,
                     width: 460,
                     resizable: false,
                     modal: true,
@@ -713,7 +716,8 @@ stashboard.fillService = function(serviceName, isAdmin, start_date, end_date) {
                                     name: $("#service-name").val(), 
                                     description: $("#service-description").val(),
                                     serviceurl: $("#service-serviceurl").val(),
-                                    pattern: $("#service-pattern").val()
+                                    pattern: $("#service-pattern").val(),
+                                    freq: $("#service-freq").val()
                                 },
                                 dataType: 'json', 
                                 success: function(data){ 
@@ -723,7 +727,8 @@ stashboard.fillService = function(serviceName, isAdmin, start_date, end_date) {
                                     $("#service-name").val(data.name);
                                     $("#service-description").val(data.description);
                                     $("#service-serviceurl").val(data.serviceurl);
-                                    $("service-pattern").val(data.pattern);
+                                    $("#service-pattern").val(data.pattern);
+                                    $("#service-freq").val(data.freq);
                                 },
                                 error: function(evt){ 
                                     $("#edit-service-modal").dialog('close');
@@ -737,6 +742,7 @@ stashboard.fillService = function(serviceName, isAdmin, start_date, end_date) {
                         }
                     }
                 });
+                $("#service-name").focus();
             });
 
         },

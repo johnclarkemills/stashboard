@@ -98,6 +98,7 @@ class ServicesListHandler(restful.Controller):
             description = self.request.get('description', default_value=None)
             serviceurl = self.request.get('serviceurl', default_value=None)
             pattern = self.request.get('pattern', default_value=None)
+            freq = self.request.get('freq', default_value=None)
             
             if name and description:
                 slug = slugify.slugify(name)
@@ -108,6 +109,7 @@ class ServicesListHandler(restful.Controller):
                     existing_s.description = description
                     existing_s.serviceurl = serviceurl
                     existing_s.pattern = pattern
+                    existing_s.freq = freq
                     existing_s.put()
                     self.json(existing_s.rest(self.base_url(version)))
                 # Create new service
@@ -143,6 +145,7 @@ class ServiceInstanceHandler(restful.Controller):
         description = self.request.get('description', default_value=None)
         serviceurl = self.request.get('serviceurl', default_value=None)
         pattern = self.request.get('pattern', default_value=None)
+        freq = self.request.get('freq', default_value=None)
         
         if (self.valid_version(version)):
             service = Service.get_by_slug(service_slug)
@@ -158,8 +161,11 @@ class ServiceInstanceHandler(restful.Controller):
                 
                 if pattern:
                     service.pattern = pattern
+
+                if freq:
+                    service.freq = int(freq)
                 
-                if name or description or serviceurl or pattern:
+                if name or description or serviceurl or pattern or freq:
                     service.put()
                     
                 self.json(service.rest(self.base_url(version)))   
@@ -177,12 +183,9 @@ class ServiceInstanceHandler(restful.Controller):
             service = Service.get_by_slug(service_slug)
             
             if service:
-                query = Event.all()
+                query = Event.all(keys_only=True)
                 query.filter('service =', service)
-                if query:
-                    for e in query:
-                        e.delete()
-
+                db.delete(query)
                 service.delete()
                 self.json(service.rest(self.base_url(version)))
             else:

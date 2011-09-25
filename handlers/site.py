@@ -39,6 +39,7 @@ clients, like a Flex app or a desktop program.
 __author__ = 'Kyle Conroy'
 
 from datetime import date, timedelta
+import datetime
 import calendar
 import re
 import os
@@ -192,10 +193,17 @@ class PingHandler(restful.Controller):
     def get(self):
         services = Service.all().fetch(999)
         statuses = Status.all().fetch(999)
+        now = datetime.datetime.now()
         for service in services:
             if service.serviceurl == None:
                 continue
+
+            query = Event.all().filter('service =', service).order("-start").fetch(1)
+            if len(query) > 0 and (now - query.pop().start < timedelta(minutes=service.freq)):
+                continue
+
             try:
+                # TODO: move to using async, so we can handle lots of pings...
                 res = urlfetch.fetch(service.serviceurl)
             except:
                 event = Event(service = service, status = statuses[0], message = "Failed page load.")

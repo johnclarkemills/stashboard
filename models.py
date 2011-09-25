@@ -76,6 +76,7 @@ class Service(db.Model):
         slug        -- string: URL friendly version of the name
         url            -- string: URL for the service cronjob
         pattern        -- string: Regex pattern for checks
+        freq        -- int: minutes between pings
 
     """
     @staticmethod
@@ -145,9 +146,10 @@ class Service(db.Model):
     
     slug = db.StringProperty(required=True)
     name = db.StringProperty(required=True)
-    description = db.StringProperty(required=True)
+    description = db.TextProperty(required=True)
     serviceurl = db.StringProperty(required=False)
     pattern = db.StringProperty(required=False)
+    freq = db.IntegerProperty(required=False, default=1)
     
     def sid(self):
         return str(self.key())
@@ -167,6 +169,8 @@ class Service(db.Model):
             m["pattern"] = str(self.pattern)
         if self.serviceurl:
             m["serviceurl"] = str(self.serviceurl)
+        if self.freq:
+            m["freq"] = str(self.freq)
         
         event = self.current_event()
         if event:
@@ -226,7 +230,7 @@ class Status(db.Model):
         
     name = db.StringProperty(required=True)
     slug = db.StringProperty(required=True)
-    description = db.StringProperty(required=True)
+    description = db.TextProperty(required=True)
     image = db.StringProperty(required=True)
     severity = db.IntegerProperty(required=True)
     

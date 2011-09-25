@@ -27,13 +27,18 @@
       <div id="webservices" class="frame">
         
         {% if user_is_admin %}
+          <a class="button" id="delete-service">
+            Delete Service
+          </a>
+          <a class="button" id="edit-service">
+            Edit Service
+          </a>
           <a class="button" id="update-status">
         Update Status
           </a>
           <a class="button" id="add-note">
         Add Note
           </a>
-
 
         {% endif %}
         
@@ -62,16 +67,6 @@
           </tbody>
         </table>
 
-        {% if user_is_admin %}
-          <a class="button" id="delete-service">
-            Delete Service
-          </a>
-          <a class="button" id="edit-service">
-            Edit Service
-          </a>
-        {% endif %}
-
-
       </div>
       
       {% if user_is_admin %}
@@ -93,15 +88,20 @@
       </div>
 
       <div class="dialog" id="edit-service-modal" title="Edit Service">
-        <label  for="service-name">Name</label>
+        <label for="service-name">Name</label>
         <input type="text" id="service-name" name="service-name">
-                <label  for="service-serviceurl">URL (Optional)</label>
+
+        <label for="service-serviceurl">URL (Optional)</label>
         <input type="text" id="service-serviceurl" name="service-serviceurl">
+
         <label for="service-description">Description</label>
-        <textarea
-          id="service-description" name="service-description"></textarea>
-        <label  for="service-pattern">Regex Pattern (Optional)</label>
+        <textarea id="service-description" name="service-description"></textarea>
+
+        <label for="service-pattern">Regex Pattern (Optional)</label>
         <input type="text" id="service-pattern" name="service-pattern">
+
+        <label for="service-freq">Frequency (minutes, default=1)</label>
+        <input type="text" id="service-freq" name="service-pattern">
       </div>
       
       {% endif %}
