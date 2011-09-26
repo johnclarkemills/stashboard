@@ -46,7 +46,7 @@ import os
 import cgi
 import logging
 from wsgiref.handlers import format_date_time
-from time import mktime
+from time import mktime, sleep
 
 from google.appengine.ext import webapp
 from google.appengine.api import users, urlfetch, mail
@@ -202,10 +202,15 @@ class PingHandler(restful.Controller):
             if len(query) > 0 and (now - query.pop().start < timedelta(minutes=service.freq)):
                 continue
 
-            try:
-                # TODO: move to using async, so we can handle lots of pings...
-                res = urlfetch.fetch(service.serviceurl)
-            except:
+            res = None
+            for i in range(4):
+                try:
+                    # TODO: move to using async, so we can handle lots of pings...
+                    res = urlfetch.fetch(service.serviceurl)
+                    break
+                except:
+                    sleep(1)
+            if not res:
                 event = Event(service = service, status = statuses[0], message = "Failed page load.")
                 event.put()
                 continue
