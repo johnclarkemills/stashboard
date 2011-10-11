@@ -147,8 +147,8 @@ class Service(db.Model):
     slug = db.StringProperty(required=True)
     name = db.StringProperty(required=True)
     description = db.TextProperty(required=True)
-    serviceurl = db.StringProperty(required=False)
-    pattern = db.StringProperty(required=False)
+    serviceurl = db.TextProperty(required=False)
+    pattern = db.TextProperty(required=False)
     freq = db.IntegerProperty(required=False, default=1)
     
     def sid(self):
