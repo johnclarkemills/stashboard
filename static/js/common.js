@@ -268,7 +268,8 @@ stashboard.fillIndex = function() {
             $('<a />', {
                 href: 'services/' + data.id,
                 text: data.name
-            })
+            }),
+            "<span style='font-size:10px'> - "+data.freq+" mins, <a href='"+data.serviceurl+"'>link</a></span>"
         ).appendTo(tr);
 
         if (fetchStatuses) {
