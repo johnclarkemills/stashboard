@@ -190,25 +190,29 @@ class ServiceHandler(restful.Controller):
         self.render(td, 'service.html')
 
 class PingHandler(restful.Controller):
+    def post(self):
+        return self.get()
+        
     def get(self):
-        services = Service.all().fetch(999)
-        statuses = Status.all().fetch(999)
+        services = Service.all().fetch(50)
+        statuses = Status.all().fetch(10)
         now = datetime.datetime.now()
-        for service in services:
+        for loop_no, service in enumerate(services):
             if service.serviceurl == None:
                 continue
-
+            
             query = Event.all().filter('service =', service).order("-start").fetch(1)
             if len(query) > 0 and (now - query.pop().start < timedelta(minutes=service.freq)):
                 continue
 
             res = None
-            for i in range(4):
+            for i in range(3):
                 try:
                     # TODO: move to using async, so we can handle lots of pings...
                     res = urlfetch.fetch(service.serviceurl)
                     break
                 except:
+                    logging.error('fetch num %d failed', i)
                     sleep(1)
             if not res:
                 event = Event(service = service, status = statuses[0], message = "Failed page load.")
